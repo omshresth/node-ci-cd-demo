@@ -58,6 +58,4 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/api
             docker stop api-container || true
             docker rm api-container || true
-            docker ps -q --filter "publish=8080" | xargs -r docker stop
-            docker ps -aq --filter "publish=8080" | xargs -r docker rm
             docker run -d -p 8080:8080 --name api-container ${{ secrets.DOCKER_USERNAME }}/api
