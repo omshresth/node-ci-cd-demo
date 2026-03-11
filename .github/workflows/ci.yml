@@ -21,8 +21,9 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Check Node
-        run: node -v
+      - name: Test App
+        run: node index.js
+
 
   docker:
     needs: build
@@ -41,19 +42,20 @@ jobs:
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/api
 
-  deploy:
-  needs: docker
-  runs-on: ubuntu-latest
 
-  steps:
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/api
-          docker stop api-container || true
-          docker rm api-container || true
-          docker run -d -p 8080:8080 --name api-container ${{ secrets.DOCKER_USERNAME }}/api      
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/api
+            docker stop api-container || true
+            docker rm api-container || true
+            docker run -d -p 8080:8080 --name api-container ${{ secrets.DOCKER_USERNAME }}/api
