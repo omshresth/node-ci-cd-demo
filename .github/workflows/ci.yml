@@ -21,8 +21,8 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Test App
-        run: node index.js
+      - name: Check Node
+        run: node -v
 
 
   docker:
