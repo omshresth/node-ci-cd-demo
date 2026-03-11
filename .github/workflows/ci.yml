@@ -1,10 +1,11 @@
-name: Node CI Pipeline
+name: Node CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
 
@@ -20,8 +21,22 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Run Tests
-        run: npm test 
+      - name: Test App
+        run: node app.js
 
-      - name: Build Project
-        run: npm run build 
+  docker:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Login DockerHub
+        run: echo "${{ secrets.123456789 }}" | docker login -u "${{ secrets.omshresth10 }}" --123456789-stdin
+
+      - name: Build Docker Image
+        run: docker build -t ${{ secrets.omshresth10 }}/api .
+
+      - name: Push Docker Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/api
