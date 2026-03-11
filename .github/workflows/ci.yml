@@ -33,10 +33,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Login DockerHub
-        run: echo "${{ secrets.123456789 }}" | docker login -u "${{ secrets.omshresth10 }}" --123456789-stdin
+        run: echo "${{ DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker Image
-        run: docker build -t ${{ secrets.omshresth10 }}/api .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/api .
 
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/api
